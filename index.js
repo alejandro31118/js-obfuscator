@@ -1,5 +1,6 @@
 const zero = '+[]'
 const one = '+!![]'
+const map = {}
 
 const number = n => n === 0 ? zero : Array.from({ length: n }, () => one).join(' + ')
 
@@ -8,38 +9,44 @@ const fromString = s => s.split('').map(x => x in map ? map[x] : `([]+[])[${from
 
 const compile = code => `(()=>{})[${fromString('constructor')}](${fromString(code)})()`
 
-const map = {}
-
 // NaN
+map.N = `(+{}+[])[${number(0)}]`
 map.a = `(+{}+[])[${number(1)}]`
 
 // [object] [Object]
 map.o = `({}+[])[${number(1)}]`
 map.b = `({}+[])[${number(2)}]`
 map.j = `({}+[])[${number(3)}]`
-map.e = `({}+[])[${number(4)}]`
 map.c = `({}+[])[${number(5)}]`
-map.t = `({}+[])[${number(6)}]`
 map[' '] = `({}+[])[${number(7)}]`
+map['['] = `({}+[])[${number(8)}]`
 
 // Infinity
 map.I = `((+!![]/+[])+[])[${number(0)}]`
 map.n = `((+!![]/+[])+[])[${number(1)}]`
-map.f = `((+!![]/+[])+[])[${number(2)}]`
 map.i = `((+!![]/+[])+[])[${number(3)}]`
 map.y = `((+!![]/+[])+[])[${number(7)}]`
 
 // false
+map.f = `(![]+[])[${number(0)}]`
 map.l = `(![]+[])[${number(2)}]`
 map.s = `(![]+[])[${number(3)}]`
 
 // true
+map.t = `(!![]+[])[${number(0)}]`
 map.r = `(!![]+[])[${number(1)}]`
 map.u = `(!![]+[])[${number(2)}]`
+map.e = `(!![]+[])[${number(3)}]`
+
+// undefined
+map.d = `([]+((${one})[${fromString('[')}]))[${number(2)}]`
 
 // function String { [native code] }
 map.S = `([]+([]+[])[${fromString('constructor')}])[${number(9)}]`
 map.g = `([]+([]+[])[${fromString('constructor')}])[${number(14)}]`
+
+// function Number() { [native code] }
+map.m = `([]+(+[])[${fromString('constructor')}])[${number(11)}]`
 
 // function RegExp { [native code] }
 map.p = `([]+(/-/)[${fromString('constructor')}])[${number(14)}]`
@@ -47,14 +54,8 @@ map.p = `([]+(/-/)[${fromString('constructor')}])[${number(14)}]`
 // /\\\\/
 map['\\'] = `(/\\\\/+[])[${number(1)}]`
 
-// (13).toString(14) === 'd'
-map.d = `(${number(13)})[${fromString('toString')}](${number(14)})`
-
 // (17).toString(18) === 'h'
 map.h = `(${number(17)})[${fromString('toString')}](${number(18)})`
-
-// (22).toString(23) === 'm'
-map.m = `(${number(22)})[${fromString('toString')}](${number(23)})`
 
 // '%5C'
 map.C = `(()=>{})[${fromString('constructor')}](${fromString('return escape')})()(${map['\\']})`
