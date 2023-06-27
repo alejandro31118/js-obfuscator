@@ -28,8 +28,10 @@ map.o = `({}+[])[${number(1)}]`
 map.b = `({}+[])[${number(2)}]`
 map.j = `({}+[])[${number(3)}]`
 map.c = `({}+[])[${number(5)}]`
+map.O = `({}+[])[${number(8)}]`
 map[' '] = `({}+[])[${number(7)}]`
 map['['] = `({}+[])[${number(0)}]`
+map[']'] = `({}+[])[${number(14)}]`
 
 // ((1/0)+[]) -> Infinity
 map.I = `((+!![]/+[])+[])[${number(0)}]`
@@ -58,17 +60,45 @@ map.g = `([]+([]+[])[${fromString('constructor')}])[${number(14)}]`
 // ([]+(+[])['constructor']) -> function Number() { [native code] }
 map.m = `([]+(+[])[${fromString('constructor')}])[${number(11)}]`
 
+// ([]+([])['constructor']) -> function Array() { [native code] }
+map.A = `([]+([])[${fromString('constructor')}])[${number(9)}]`
+
+// ([]+(![])['constructor']) -> function Boolean() { [native code] }
+map.B = `([]+(![])[${fromString('constructor')}])[${number(9)}]`
+
+// ((()=>{})['constructor']) => 'function Function() { [native code] }'
+map.F = `((()=>{})[${fromString('constructor')}]+[])[${number(9)}]`
+
 // ([]+(/-/)['constructor']) -> function RegExp { [native code] }
 map.p = `([]+(/-/)[${fromString('constructor')}])[${number(14)}]`
 
-// (/\\\\/+[]) -> /\\\\/
+// Regex
 map['\\'] = `(/\\\\/+[])[${number(1)}]`
+map['/'] = `(/-/+[])[${number(0)}]`
+map['-'] = `(/-/+[])[${number(1)}]`
+map['+'] = `(/-+/+[])[${number(2)}]`
+map['>'] = `(/>/+[])[${number(1)}]`
+map['!'] = `(/!/+[])[${number(1)}]`
+map['='] = `(/=/+[])[${number(1)}]`
+map['('] = `(/()/+[])[${number(1)}]`
+map[')'] = `(/()/+[])[${number(2)}]`
+map['{'] = `(/{/+[])[${number(1)}]`
+map['}'] = `(/}/+[])[${number(1)}]`
+map[']'] = `(/]/+[])[${number(1)}]`
 
-// (17)['toString'](18) -> h
+// (x)['toString'](x + 1) -> letter
 map.h = `(${number(17)})[${fromString('toString')}](${number(18)})`
+map.k = `(${number(20)})[${fromString('toString')}](${number(21)})`
+map.q = `(${number(26)})[${fromString('toString')}](${number(27)})`
+map.v = `(${number(31)})[${fromString('toString')}](${number(32)})`
+map.w = `(${number(32)})[${fromString('toString')}](${number(33)})`
+map.x = `(${number(33)})[${fromString('toString')}](${number(34)})`
+map.z = `(${number(35)})[${fromString('toString')}](${number(36)})`
 
 // (()=>{})['constructor']('return escape')()('\\') -> %5C
 map['%'] = `(()=>{})[${fromString('constructor')}](${fromString('return escape')})()(${map['\\']})[${number(0)}]`
 map.C = `(()=>{})[${fromString('constructor')}](${fromString('return escape')})()(${map['\\']})[${number(2)}]`
+map.E = `(()=>{})[${fromString('constructor')}](${fromString('return escape')})()(${map['>']})[${number(2)}]`
+map.D = `(()=>{})[${fromString('constructor')}](${fromString('return escape')})()(${map['}']})[${number(2)}]`
 
 console.log(compile('console.log("Hello world")'))
